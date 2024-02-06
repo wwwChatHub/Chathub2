@@ -1,4 +1,3 @@
-<dependencies>
     <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-server</artifactId>
