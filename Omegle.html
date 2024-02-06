@@ -3,29 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
-    <link rel="stylesheet" href="Omegle.css">
+    <title>Omegle-like Chat</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <input type="text" id="messageInput" placeholder="Type a message...">
-    <button onclick="sendMessage()">Send</button>
-    <div id="messageContainer"></div>
+    <div class="container">
+        <h1>Omegle-like Chat</h1>
+        <div id="chat-box"></div>
+        <div id="controls">
+            <input type="text" id="message-input" placeholder="Type your message...">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
 
-    <script src="https://omegleclone.lv1metrash21.workers.dev/"></script>
-    <script>
-        const socket = io();
-
-        function sendMessage() {
-            const message = document.getElementById('messageInput').value;
-            socket.emit('message', message);
-        }
-
-        socket.on('message', (message) => {
-            const messageContainer = document.getElementById('messageContainer');
-            const messageElement = document.createElement('div');
-            messageElement.textContent = message;
-            messageContainer.appendChild(messageElement);
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
