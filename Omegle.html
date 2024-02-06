@@ -3,19 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Omegle Clone</title>
-    <link rel="stylesheet" href="Omegle.css">
+    <title>Chat</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Omegle Clone</h1>
-        <div id="chat-box"></div>
-        <div id="controls">
-            <input type="text" id="message-input" placeholder="Type your message...">
-            <button id="send-button">Send</button>
-        </div>
-    </div>
+    <input type="text" id="messageInput" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+    <div id="messageContainer"></div>
 
-    <script src="Omegle.java"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        function sendMessage() {
+            const message = document.getElementById('messageInput').value;
+            socket.emit('message', message);
+        }
+
+        socket.on('message', (message) => {
+            const messageContainer = document.getElementById('messageContainer');
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message;
+            messageContainer.appendChild(messageElement);
+        });
+    </script>
 </body>
 </html>
