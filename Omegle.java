@@ -30,7 +30,7 @@ async function handleRequest(request) {
 
     try {
       // Make a POST request to your Java application's endpoint
-      const response = await fetch(javaAppUrl + '/endpoint', {
+      const response = await fetch(javaAppUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
