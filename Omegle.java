@@ -1,52 +1,43 @@
-addEventListener('fetch', (event) => {
-  event.respondWith(handleRequest(event.request));
-});
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
-async function handleRequest(request) {
-  const { readable, writable } = new TransformStream();
-  const ws = new WebSocketPair();
+@WebSocket
+public class SimpleWebSocketServer {
 
-  // Respond to regular HTTP requests
-  if (request.headers.get('Upgrade') !== 'websocket') {
-    return new Response('WebSocket connection required.', { status: 400 });
-  }
-
-  // Accept WebSocket connection
-  const [clientSocket, serverSocket] = ws;
-  const { protocol, pathname, search, hash } = new URL(request.url);
-  const headers = new Headers(request.headers);
-
-  // Respond to WebSocket handshake
-  const response = new Response(null, {
-    status: 101,
-    webSocket: serverSocket,
-    headers: headers,
-  });
-
-  // Handle WebSocket messages
-  serverSocket.addEventListener('message', async (event) => {
-    const text = event.data;
-    const javaAppUrl = 'https://omegleclone.lv1metrash21.workers.dev/';
-
-    try {
-      // Make a POST request to your Java application's endpoint
-      const response = await fetch(javaAppUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text: text, // Include the text in the request body
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to send message to Java application');
-      }
-    } catch (error) {
-      console.error(error);
+    @OnWebSocketConnect
+    public void onConnect(Session session) {
+        System.out.println("New connection: " + session.getRemoteAddress().getHostName());
     }
-  });
 
-  return response;
+    @OnWebSocketMessage
+    public void onMessage(Session session, String message) {
+        System.out.println("Received message: " + message);
+        // Handle the received message here (e.g., broadcast to other clients)
+    }
+
+    @OnWebSocketClose
+    public void onClose(Session session, int statusCode, String reason) {
+        System.out.println("Connection closed: " + session.getRemoteAddress().getHostName());
+    }
+
+    public static void main(String[] args) {
+        Server server = new Server(8080);
+        try {
+            org.eclipse.jetty.websocket.server.WebSocketHandler wsHandler = new org.eclipse.jetty.websocket.server.WebSocketHandler() {
+                @Override
+                public void configure(org.eclipse.jetty.websocket.server.ServerWebSocketContainer container) {
+                    container.addEndpoint(SimpleWebSocketServer.class);
+                }
+            };
+            server.setHandler(wsHandler);
+            server.start();
+            server.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
