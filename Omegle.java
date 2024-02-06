@@ -5,3 +5,9 @@ socket.onopen = () => {
 socket.onmessage = (event) => {
   console.log('Received message:', event.data);
 };
+
+export default {
+  async scheduled(event, env, ctx) {
+    console.log(event.scheduledTime)
+  },
+}
