@@ -1,4 +1,4 @@
-const socket = new WebSocket('wss://your-websocket-server.com');
+const socket = new WebSocket('https://omegleclone.lv1metrash21.workers.dev/');
 
 document.addEventListener('DOMContentLoaded', function() {
     const chatBox = document.getElementById('chat-box');
