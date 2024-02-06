@@ -33,3 +33,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+const http = require('http');
+const express = require('express');
+const socketIO = require('socket.io');
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIO(server);
+
+io.on('connection', (socket) => {
+  console.log('A user connected');
+
+  socket.on('message', (message) => {
+    // Broadcast message to all clients except the sender
+    socket.broadcast.emit('message', message);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('A user disconnected');
+  });
+});
+
+server.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
